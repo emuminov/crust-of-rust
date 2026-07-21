@@ -1,11 +1,10 @@
-#[allow(dead_code)]
 struct FlattenIterator<T>
 where
     T: Iterator,
     T::Item: IntoIterator,
 {
-    o: T,
-    i: Option<<T::Item as IntoIterator>::IntoIter>,
+    outer: T,
+    inner: Option<<T::Item as IntoIterator>::IntoIter>,
 }
 
 impl<T> FlattenIterator<T>
@@ -13,8 +12,11 @@ where
     T: Iterator,
     T::Item: IntoIterator,
 {
-    fn new(o: T) -> Self {
-        Self { o, i: None }
+    fn new(iterator: T) -> Self {
+        Self {
+            outer: iterator,
+            inner: None,
+        }
     }
 }
 
@@ -24,20 +26,14 @@ where
     T::Item: IntoIterator,
 {
     type Item = <T::Item as IntoIterator>::Item;
-    fn next(&mut self) -> Option<<T::Item as IntoIterator>::Item> {
+    fn next(&mut self) -> Option<Self::Item> {
         loop {
-            if let Some(inner_iterator) = self.i.as_mut() {
-                let inner = inner_iterator.next();
-                if inner.is_some() {
-                    return inner;
+            if let Some(inner_iterator) = &mut self.inner {
+                if let Some(item) = inner_iterator.next() {
+                    return Some(item);
                 }
             }
-
-            if let Some(item) = self.o.next() {
-                self.i = Some(item.into_iter());
-            } else {
-                return None;
-            }
+            self.inner = Some(self.outer.next()?.into_iter());
         }
     }
 }
