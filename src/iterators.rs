@@ -62,25 +62,13 @@ mod tests {
 
     #[test]
     fn two_vectors() {
-        let mut f = flatten(vec![vec![1, 2, 3], vec![4, 5, 6]].into_iter());
-        assert_eq!(f.next(), Some(1));
-        assert_eq!(f.next(), Some(2));
-        assert_eq!(f.next(), Some(3));
-        assert_eq!(f.next(), Some(4));
-        assert_eq!(f.next(), Some(5));
-        assert_eq!(f.next(), Some(6));
-        assert_eq!(f.next(), None);
+        let f: Vec<_> = flatten(vec![vec![1, 2, 3], vec![4, 5, 6]].into_iter()).collect();
+        assert_eq!(f, vec![1, 2, 3, 4, 5, 6]);
     }
 
     #[test]
     fn three_vectors() {
-        let mut f = flatten(vec![vec![1, 2], vec![3, 4], vec![5, 6]].into_iter());
-        assert_eq!(f.next(), Some(1));
-        assert_eq!(f.next(), Some(2));
-        assert_eq!(f.next(), Some(3));
-        assert_eq!(f.next(), Some(4));
-        assert_eq!(f.next(), Some(5));
-        assert_eq!(f.next(), Some(6));
-        assert_eq!(f.next(), None);
+        let f: Vec<_> = flatten(vec![vec![1, 2], vec![3, 4], vec![5, 6]].into_iter()).collect();
+        assert_eq!(f, vec![1, 2, 3, 4, 5, 6]);
     }
 }
